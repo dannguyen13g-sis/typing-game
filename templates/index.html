@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10-Word Typing Game</title>
+<style>
+body { font-family: monospace; margin: 32px auto; padding: 0 16px; max-width: 850px; line-height: 1.6; }
+#words { font-size: 1.3rem; overflow-wrap: anywhere; }
+input { width: 100%; box-sizing: border-box; padding: 12px; font: inherit; font-size: 1.1rem; }
+button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointer; }
+#result, #question, #goodbye { margin-top: 16px; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<p id="words"></p>
+<form id="typing-form">
+<label for="answer">Type the 10 words above: </label>
+<input id="answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+<button type="submit">Enter</button>
+</form>
+<div id="result" aria-live="polite"></div>
+<div id="question" hidden>
+<p>Want to try again?(y/n): </p>
+<button type="button" id="yes">y</button><button type="button" id="no">n</button>
+</div>
+<p id="goodbye" hidden>Okay then, see you later!</p>
+<script>
+let string = "";
+let start = null;
+let we_still_playing = true;
+const wordsElement = document.getElementById("words");
+const form = document.getElementById("typing-form");
+const answer = document.getElementById("answer");
+const result = document.getElementById("result");
+const question = document.getElementById("question");
+const goodbye = document.getElementById("goodbye");
+
+async function newGame() {
+  form.hidden = true;
+  question.hidden = true;
+  goodbye.hidden = true;
+  result.textContent = "";
+  wordsElement.textContent = "Loading...";
+  answer.value = "";
+  try {
+    const response = await fetch("/new-game", {cache: "no-store"});
+    if (!response.ok) throw new Error("Could not load words");
+    const data = await response.json();
+    string = data.string;
+    wordsElement.textContent = string;
+    form.hidden = false;
+    answer.focus();
+    start = performance.now();
+  } catch (error) {
+    wordsElement.textContent = "Could not load words. Refresh to try again.";
+  }
+}
+
+form.addEventListener("submit", function(event) {
+  event.preventDefault();
+  if (!we_still_playing || start === null) return;
+  const elapsed = (performance.now() - start) / 1000;
+  const user_input = answer.value;
+  if (user_input === string) {
+    result.textContent = "You got it in: " + elapsed + " seconds!";
+  } else {
+    result.textContent = "You mistyped it! Oh no! Your time: " + elapsed + " seconds.";
+  }
+  form.hidden = true;
+  question.hidden = false;
+  start = null;
+});
+
+document.getElementById("yes").addEventListener("click", function() {
+  we_still_playing = true;
+  newGame();
+});
+document.getElementById("no").addEventListener("click", function() {
+  we_still_playing = false;
+  question.hidden = true;
+  goodbye.hidden = false;
+});
+newGame();
+</script>
+</body>
+</html>
