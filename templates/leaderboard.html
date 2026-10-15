@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Typing Game Leaderboard</title>
+</head>
+<body>
+
+<h1>Typing Game Leaderboard</h1>
+
+<table border="1">
+    <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Time</th>
+    </tr>
+
+    {% for player in leaderboard %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ player.username }}</td>
+        <td>{{ player.time }} seconds</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<a href="/">Back to Game</a>
+
+</body>
+</html>
