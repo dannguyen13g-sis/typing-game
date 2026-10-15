@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify
 from wordfreq import top_n_list
 import random
 import time
+import sqlite3
 
 app = Flask(__name__)
 we_still_playing = True
@@ -10,7 +11,18 @@ words = [
     word for word in top_n_list("en", 50000)
     if len(word) == 5 and word.isalpha()
 ][:2000]
+def create_database():
+    conn = sqlite3.connect("leaderboard.db")
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS scores (
+            username TEXT,
+            seconds REAL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
+create_database()
 @app.route("/")
 def home():
     return render_template("index.html")
