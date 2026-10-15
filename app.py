@@ -32,5 +32,24 @@ def new_game():
         string = word + " " + word1 + " " + word2 + " " + word3 + " " + word4 + " " + word5 + " " + word6 + " " + word7 + " " + word8 + " " + word9
     return jsonify({"string": string})
 
+# Example leaderboard scores
+leaderboard = [
+    {"username": "MangoMan", "time": 8.52},
+    {"username": "SpeedKing", "time": 9.71},
+    {"username": "FastTyper", "time": 11.24}
+]
+
+@app.route("/leaderboard")
+def show_leaderboard():
+    sorted_scores = sorted(
+        leaderboard,
+        key=lambda player: player["time"]
+    )
+
+    return render_template(
+        "leaderboard.html",
+        leaderboard=sorted_scores
+    )
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
