@@ -74,8 +74,8 @@ def submit_score():
         "correct": True,
         "elapsed": elapsed
     })
-  def new_game():
-    # Each visitor gets a fresh string; don't store shared game state.
+def new_game():
+# Each visitor gets a fresh string; don't store shared game state.
     for i in range(1):
         word = random.choice(words)
         word1 = random.choice(words)
@@ -90,16 +90,16 @@ def submit_score():
         string = word + " " + word1 + " " + word2 + " " + word3 + " " + word4 + " " + word5 + " " + word6 + " " + word7 + " " + word8 + " " + word9
     challenge_id = secrets.token_urlsafe(24)
 
-  with challenge_lock:
-      challenges[challenge_id] = {
-          "string": string,
-          "start": time.monotonic()
-      }
+with challenge_lock:
+    challenges[challenge_id] = {
+        "string": string,
+        "start": time.monotonic()
+    }
   
-  return jsonify({
-      "string": string,
-      "challenge_id": challenge_id
-  })
+return jsonify({
+    "string": string,
+    "challenge_id": challenge_id
+})
 
 # Example leaderboard scores
 
