@@ -90,16 +90,16 @@ def new_game():
         string = word + " " + word1 + " " + word2 + " " + word3 + " " + word4 + " " + word5 + " " + word6 + " " + word7 + " " + word8 + " " + word9
     challenge_id = secrets.token_urlsafe(24)
 
-with challenge_lock:
-    challenges[challenge_id] = {
+    with challenge_lock:
+        challenges[challenge_id] = {
+            "string": string,
+            "start": time.monotonic()
+        }
+      
+    return jsonify({
         "string": string,
-        "start": time.monotonic()
-    }
-  
-return jsonify({
-    "string": string,
-    "challenge_id": challenge_id
-})
+        "challenge_id": challenge_id
+    })
 
 # Example leaderboard scores
 
