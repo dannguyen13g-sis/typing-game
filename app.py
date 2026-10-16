@@ -76,18 +76,17 @@ def submit_score():
     })
 def new_game():
 # Each visitor gets a fresh string; don't store shared game state.
-    for i in range(1):
-        word = random.choice(words)
-        word1 = random.choice(words)
-        word2 = random.choice(words)
-        word3 = random.choice(words)
-        word4 = random.choice(words)
-        word5 = random.choice(words)
-        word6 = random.choice(words)
-        word7 = random.choice(words)
-        word8 = random.choice(words)
-        word9 = random.choice(words)
-        string = word + " " + word1 + " " + word2 + " " + word3 + " " + word4 + " " + word5 + " " + word6 + " " + word7 + " " + word8 + " " + word9
+    word = random.choice(words)
+    word1 = random.choice(words)
+    word2 = random.choice(words)
+    word3 = random.choice(words)
+    word4 = random.choice(words)
+    word5 = random.choice(words)
+    word6 = random.choice(words)
+    word7 = random.choice(words)
+    word8 = random.choice(words)
+    word9 = random.choice(words)
+    string = word + " " + word1 + " " + word2 + " " + word3 + " " + word4 + " " + word5 + " " + word6 + " " + word7 + " " + word8 + " " + word9
     challenge_id = secrets.token_urlsafe(24)
 
     with challenge_lock:
