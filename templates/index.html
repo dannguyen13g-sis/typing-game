@@ -70,19 +70,59 @@ async function newGame() {
   }
 }
 
-form.addEventListener("submit", function(event) {
+
+form.addEventListener("submit", async function(event) {
   event.preventDefault();
+
   if (!we_still_playing || start === null) return;
-  const elapsed = (performance.now() - start) / 1000;
-  const user_input = answer.value;
-  if (user_input === string) {
-    result.textContent = "You got it in: " + elapsed + " seconds!";
-  } else {
-    result.textContent = "You mistyped it! Oh no! Your time: " + elapsed + " seconds.";
+
+  const username = document.getElementById("username").value.trim();
+
+  if (!username) {
+    result.textContent = "Please enter a username!";
+    return;
   }
+
+  const user_input = answer.value;
+
   form.hidden = true;
-  question.hidden = false;
   start = null;
+  result.textContent = "Checking your answer...";
+
+  try {
+    const response = await fetch("/submit-score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        answer: user_input,
+        challenge_id: challenge_id
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not submit score");
+    }
+
+    if (data.correct) {
+      result.textContent =
+        "You got it in: " + data.elapsed.toFixed(2) + " seconds!";
+    } else {
+      result.textContent =
+        "You mistyped it! Oh no! Your time: " +
+        data.elapsed.toFixed(2) + " seconds.";
+    }
+
+    question.hidden = false;
+
+  } catch (error) {
+    result.textContent = error.message;
+    question.hidden = false;
+  }
 });
 
 document.getElementById("yes").addEventListener("click", function() {
