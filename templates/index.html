@@ -14,6 +14,16 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 </style>
 </head>
 <body>
+
+<label for="username">Username: </label>
+<input id="username" type="text"
+       maxlength="20" required
+       placeholder="Enter your username">
+
+<p>
+  <a href="/leaderboard">View Leaderboard</a>
+</p>
+
 <p id="words"></p>
 <form id="typing-form">
 <label for="answer">Type the 10 words above: </label>
@@ -30,6 +40,7 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 let string = "";
 let start = null;
 let we_still_playing = true;
+let challenge_id = null;
 const wordsElement = document.getElementById("words");
 const form = document.getElementById("typing-form");
 const answer = document.getElementById("answer");
@@ -49,6 +60,7 @@ async function newGame() {
     if (!response.ok) throw new Error("Could not load words");
     const data = await response.json();
     string = data.string;
+    challenge_id = data.challenge_id;
     wordsElement.textContent = string;
     form.hidden = false;
     answer.focus();
