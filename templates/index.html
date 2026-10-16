@@ -22,7 +22,6 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 <p>
   <a href="/leaderboard">View Leaderboard</a>
 </p>
-<button onclick="newGame()">Enter</button>
 <p id="words"></p>
 <form id="typing-form">
 <label for="answer">Type the 10 words above: </label>
@@ -54,7 +53,7 @@ async function newGame() {
   result.textContent = "";
   wordsElement.textContent = "Loading...";
   answer.value = "";
-  try {
+  <button onclick="try {
     const response = await fetch("/new-game", {cache: "no-store"});
     if (!response.ok) throw new Error("Please enter a nickname.");
     const data = await response.json();
@@ -66,7 +65,7 @@ async function newGame() {
     start = performance.now();
   } catch (error) {
     wordsElement.textContent = "Please enter a nickname.";
-  }
+  }">Enter</button>
 }
 
 
