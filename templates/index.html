@@ -18,12 +18,11 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 <label for="username">Username: </label>
 <input id="username" type="text"
        maxlength="20" required
-       placeholder="Enter your username">
-
+       placeholder="Enter a nickname">
 <p>
   <a href="/leaderboard">View Leaderboard</a>
 </p>
-
+<button type="newGame()">Enter<</button>
 <p id="words"></p>
 <form id="typing-form">
 <label for="answer">Type the 10 words above: </label>
@@ -57,7 +56,7 @@ async function newGame() {
   answer.value = "";
   try {
     const response = await fetch("/new-game", {cache: "no-store"});
-    if (!response.ok) throw new Error("Could not load words");
+    if (!response.ok) throw new Error("Please enter a nickname.");
     const data = await response.json();
     string = data.string;
     challenge_id = data.challenge_id;
@@ -66,7 +65,7 @@ async function newGame() {
     answer.focus();
     start = performance.now();
   } catch (error) {
-    wordsElement.textContent = "Could not load words. Refresh to try again.";
+    wordsElement.textContent = "Please enter a nickname.";
   }
 }
 
