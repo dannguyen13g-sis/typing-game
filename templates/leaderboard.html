@@ -1,30 +1,50 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Typing Game Leaderboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typing Game Leaderboard</title>
+<style>
+body {
+  font-family: monospace;
+  margin: 32px auto;
+  padding: 0 16px;
+  max-width: 850px;
+  line-height: 1.6;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  border: 1px solid black;
+  padding: 12px;
+  text-align: center;
+}
+</style>
 </head>
 <body>
 
 <h1>Typing Game Leaderboard</h1>
 
-<table border="1">
-    <tr>
-        <th>Rank</th>
-        <th>Username</th>
-        <th>Time</th>
-    </tr>
+<table>
+  <tr>
+    <th>Rank</th>
+    <th>Username</th>
+    <th>Best Time</th>
+  </tr>
 
-    {% for player in leaderboard %}
-    <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ player.username }}</td>
-        <td>{{ player.time }} seconds</td>
-    </tr>
-    {% endfor %}
-
+  {% for username, seconds in leaderboard %}
+  <tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ username }}</td>
+    <td>{{ "%.2f"|format(seconds) }} seconds</td>
+  </tr>
+  {% endfor %}
 </table>
 
-<a href="/">Back to Game</a>
+<p><a href="/">Back to Game</a></p>
 
 </body>
 </html>
