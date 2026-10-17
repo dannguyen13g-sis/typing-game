@@ -22,6 +22,9 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 <p>
   <a href="/leaderboard">View Leaderboard</a>
 </p>
+<button type="button" id="start-game">
+    Start Game
+</button>
 <p id="words"></p>
 <form id="typing-form">
 <label for="answer">Type the 10 words above: </label>
@@ -40,6 +43,7 @@ let start = null;
 let we_still_playing = true;
 let challenge_id = null;
 const wordsElement = document.getElementById("words");
+const startButton = document.getElementById("start-game");
 const form = document.getElementById("typing-form");
 const answer = document.getElementById("answer");
 const result = document.getElementById("result");
@@ -47,6 +51,7 @@ const question = document.getElementById("question");
 const goodbye = document.getElementById("goodbye");
 
 async function newGame() {
+  startButton.hidden = true;
   form.hidden = true;
   question.hidden = true;
   goodbye.hidden = true;
@@ -65,6 +70,7 @@ async function newGame() {
     start = performance.now();
   } catch (error) {
     wordsElement.textContent = "Could not load words. Refresh to try again.";
+    startButton.hidden = false;
   }
 }
 
@@ -125,14 +131,29 @@ form.addEventListener("submit", async function(event) {
 
 document.getElementById("yes").addEventListener("click", function() {
   we_still_playing = true;
-  newGame();
+  startButton.hidden = false;
+  question.hidden = true;
+  wordsElement.textContent = "Click Start Game to play again.";
 });
 document.getElementById("no").addEventListener("click", function() {
   we_still_playing = false;
   question.hidden = true;
   goodbye.hidden = false;
 });
-newGame();
+
+wordsElement.textContent = "Enter your username to begin.";
+
+startButton.addEventListener("click", function() {
+    const username = document.getElementById("username");
+
+    if (!username.value.trim()) {
+        alert("Please enter your username first!");
+        username.focus();
+        return;
+    }
+
+    newGame();
+});
 </script>
 </body>
 </html>
