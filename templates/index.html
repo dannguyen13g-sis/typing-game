@@ -53,7 +53,6 @@ async function newGame() {
   result.textContent = "";
   wordsElement.textContent = "Loading...";
   answer.value = "";
-  <button onclick="try {
     const response = await fetch("/new-game", {cache: "no-store"});
     if (!response.ok) throw new Error("Please enter a nickname.");
     const data = await response.json();
@@ -65,7 +64,7 @@ async function newGame() {
     start = performance.now();
   } catch (error) {
     wordsElement.textContent = "Please enter a nickname.";
-  }">Enter</button>
+  }
 }
 
 
