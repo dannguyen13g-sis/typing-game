@@ -14,6 +14,14 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 </style>
 </head>
 <body>
+<label for="username">Username: </label>
+<input id="username" type="text"
+       maxlength="20" required
+       placeholder="Enter your username">
+
+<p>
+  <a href="/leaderboard">View Leaderboard</a>
+</p>
 <p id="words"></p>
 <form id="typing-form">
 <label for="answer">Type the 10 words above: </label>
@@ -30,6 +38,7 @@ button { padding: 10px 20px; margin: 12px 8px 0 0; font: inherit; cursor: pointe
 let string = "";
 let start = null;
 let we_still_playing = true;
+let challenge_id = null;
 const wordsElement = document.getElementById("words");
 const form = document.getElementById("typing-form");
 const answer = document.getElementById("answer");
@@ -49,6 +58,7 @@ async function newGame() {
     if (!response.ok) throw new Error("Could not load words");
     const data = await response.json();
     string = data.string;
+    challenge_id = data.challenge_id;
     wordsElement.textContent = string;
     form.hidden = false;
     answer.focus();
@@ -58,19 +68,59 @@ async function newGame() {
   }
 }
 
-form.addEventListener("submit", function(event) {
+
+form.addEventListener("submit", async function(event) {
   event.preventDefault();
+
   if (!we_still_playing || start === null) return;
-  const elapsed = (performance.now() - start) / 1000;
-  const user_input = answer.value;
-  if (user_input === string) {
-    result.textContent = "You got it in: " + elapsed + " seconds!";
-  } else {
-    result.textContent = "You mistyped it! Oh no! Your time: " + elapsed + " seconds.";
+
+  const username = document.getElementById("username").value.trim();
+
+  if (!username) {
+    result.textContent = "Please enter a username!";
+    return;
   }
+
+  const user_input = answer.value;
+
   form.hidden = true;
-  question.hidden = false;
   start = null;
+  result.textContent = "Checking your answer...";
+
+  try {
+    const response = await fetch("/submit-score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: username,
+        answer: user_input,
+        challenge_id: challenge_id
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Could not submit score");
+    }
+
+    if (data.correct) {
+      result.textContent =
+        "You got it in: " + data.elapsed.toFixed(2) + " seconds!";
+    } else {
+      result.textContent =
+        "You mistyped it! Oh no! Your time: " +
+        data.elapsed.toFixed(2) + " seconds.";
+    }
+
+    question.hidden = false;
+
+  } catch (error) {
+    result.textContent = error.message;
+    question.hidden = false;
+  }
 });
 
 document.getElementById("yes").addEventListener("click", function() {
